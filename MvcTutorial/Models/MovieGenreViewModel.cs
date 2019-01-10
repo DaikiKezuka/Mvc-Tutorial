@@ -8,7 +8,7 @@ namespace MvcTutorial.Models
 {
     public class MovieGenreViewModel
     {
-        public List<Movie> Movies;
+        public IEnumerable<Movie> Movies;
         public SelectList Genres;
         public string MovieGenre { get; set; }
         public string SearchString { get; set; }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcTutorial.Models;
+using X.PagedList;
 
 namespace MvcTutorial.Controllers
 {
@@ -19,7 +20,7 @@ namespace MvcTutorial.Controllers
         }
 
         // GET: Movies
-        public async Task<IActionResult> Index(string movieGenre, string searchString)
+        public async Task<IActionResult> Index(int? pageNumber, string movieGenre, string searchString)
         {
             // Use LINQ to get list of genres.
             IQueryable<string> genreQuery = from m in _context.Movie
@@ -39,10 +40,15 @@ namespace MvcTutorial.Controllers
                 movies = movies.Where(x => x.Genre == movieGenre);
             }
 
+
+            var view = await movies.ToPagedListAsync(pageNumber ?? 1, 10);
+
+
             var movieGenreVM = new MovieGenreViewModel();
             movieGenreVM.Genres = new SelectList(await genreQuery.Distinct().ToListAsync());
-            movieGenreVM.Movies = await movies.ToListAsync();
+            movieGenreVM.Movies = view;
             movieGenreVM.SearchString = searchString;
+
 
 
             return View(movieGenreVM);
